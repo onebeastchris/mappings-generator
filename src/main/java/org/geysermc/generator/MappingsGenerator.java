@@ -1178,11 +1178,118 @@ public class MappingsGenerator {
             statesObject.addProperty("update_bit", false);
         }
 
+        /*
+        if (statesObject.has("minecraft:facing_direction")) {
+            System.out.println("Found facing_direction for " + identifier + "(" + stateIdentifier + ")");
+            boolean done = false;
+            if (identifier.contains("facing=north")) {
+                statesObject.addProperty("minecraft:facing_direction", "north");
+                System.out.println("Set facing_direction to north for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=south")) {
+                statesObject.addProperty("minecraft:facing_direction", "south");
+                System.out.println("Set facing_direction to south for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=east")) {
+                statesObject.addProperty("minecraft:facing_direction", "east");
+                System.out.println("Set facing_direction to east for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=west")) {
+                statesObject.addProperty("minecraft:facing_direction", "west");
+                System.out.println("Set facing_direction to west for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=up")) {
+                statesObject.addProperty("minecraft:facing_direction", "up");
+                System.out.println("Set facing_direction to up for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=down")) {
+                statesObject.addProperty("minecraft:facing_direction", "down");
+                System.out.println("Set facing_direction to down for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            }
+
+            if (!done) {
+                System.out.println("Failed to set facing_direction for " + identifier + "(" + stateIdentifier + ")");
+            }
+        }
+
+        if (statesObject.has("minecraft:cardinal_direction")) {
+            System.out.println("Found cardinal_direction for " + identifier + "(" + stateIdentifier + ")");
+            boolean done = false;
+            if (identifier.contains("facing=north")) {
+                statesObject.addProperty("minecraft:cardinal_direction", "north");
+                System.out.println("Set cardinal_direction to north for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=south")) {
+                statesObject.addProperty("minecraft:cardinal_direction", "south");
+                System.out.println("Set cardinal_direction to south for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=east")) {
+                statesObject.addProperty("minecraft:cardinal_direction", "east");
+                System.out.println("Set cardinal_direction to east for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=west")) {
+                statesObject.addProperty("minecraft:cardinal_direction", "west");
+                System.out.println("Set cardinal_direction to west for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=up")) {
+                statesObject.addProperty("minecraft:cardinal_direction", "up");
+                System.out.println("Set cardinal_direction to up for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=down")) {
+                statesObject.addProperty("minecraft:cardinal_direction", "down");
+                System.out.println("Set cardinal_direction to down for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            }
+
+            if (!done) {
+                System.out.println("Failed to set cardinal_direction for " + identifier + "(" + stateIdentifier + ")");
+            }
+        }
+
+
+        if (statesObject.has("minecraft:block_face")) {
+            System.out.println("Found block_face for " + identifier + "(" + stateIdentifier + ")");
+
+            boolean done = false;
+            if (identifier.contains("facing=north")) {
+                statesObject.addProperty("minecraft:block_face", "north");
+                System.out.println("Set block_face to north for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=south")) {
+                statesObject.addProperty("minecraft:block_face", "south");
+                System.out.println("Set block_face to south for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=east")) {
+                statesObject.addProperty("minecraft:block_face", "east");
+                System.out.println("Set block_face to east for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=west")) {
+                statesObject.addProperty("minecraft:block_face", "west");
+                System.out.println("Set block_face to west for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=up")) {
+                statesObject.addProperty("minecraft:block_face", "up");
+                System.out.println("Set block_face to top for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            } else if (identifier.contains("facing=down")) {
+                statesObject.addProperty("minecraft:block_face", "down");
+                System.out.println("Set block_face to bottom for " + identifier + "(" + stateIdentifier + ")");
+                done = true;
+            }
+
+            if (!done) {
+                System.out.println("Failed to set block_face for " + identifier + "(" + stateIdentifier + ")");
+            }
+        }
+         */
+
         List<String> stateKeys = STATES.get(stateIdentifier);
         if (stateKeys != null) {
             stateKeys.forEach(key -> {
-                //if (trimmedIdentifier.contains("minecraft:shulker_box")) return;
+                if (trimmedIdentifier.contains("minecraft:shulker_box")) return;
                 if (!statesObject.has(key)) {
+                    System.out.println("Missing state " + key + " for " + stateIdentifier);
                     statesObject.addProperty(key, "MANUALMAP");
                 }
             });
@@ -1222,40 +1329,6 @@ public class MappingsGenerator {
             bedrockIdentifier = "bed";
         } else if (identifier.endsWith("_skull") || identifier.endsWith("_head")) {
             bedrockIdentifier = "skull";
-        }
-
-
-        //TODO remove
-         else if (identifier.endsWith("_shulker_box")) {
-            // Colored shulker boxes only
-            System.out.println("Shulker box " + identifier + " remapped");
-            bedrockIdentifier = identifier.replace("minecraft:", "");
-        }
-
-        // temp generation
-        if (identifier.contains("planks")) {
-            System.out.println("Planks!" + identifier);
-            bedrockIdentifier = identifier.replace("minecraft:", "");
-        }
-
-        if (identifier.contains("concrete")) {
-            System.out.println("Concrete!" + identifier);
-            bedrockIdentifier = identifier.replace("minecraft:", "");
-        }
-
-        if (identifier.contains("stained_glass")) {
-            System.out.println("stained glass" + identifier);
-            bedrockIdentifier = identifier.replace("minecraft:", "");
-        }
-
-        if (identifier.endsWith("_terracotta") && !identifier.contains("glazed")) {
-            System.out.println("Terracotta !" + identifier);
-            bedrockIdentifier = identifier.replace("minecraft:", "");
-        }
-
-        if (bedrockIdentifier.equals("stone")) {
-            System.out.println("Stone!" + bedrockIdentifier +  " " + identifier);
-            bedrockIdentifier = identifier.replace("minecraft:", "");
         }
 
         if (bedrockIdentifier.startsWith("stone_slab") || bedrockIdentifier.startsWith("double_stone_slab")) {
