@@ -928,8 +928,6 @@ public class MappingsGenerator {
         } else if (trimmedIdentifier.startsWith("minecraft:potted")) {
             // Pots are block entities on Bedrock
             bedrockIdentifier = "minecraft:flower_pot";
-        } else if (trimmedIdentifier.endsWith("concrete_powder")) {
-            bedrockIdentifier = "minecraft:concrete_powder";
         } else if (trimmedIdentifier.endsWith("piston_head")) {
             if (identifier.contains("type=sticky")) {
                 bedrockIdentifier = "minecraft:sticky_piston_arm_collision";
@@ -1183,7 +1181,7 @@ public class MappingsGenerator {
         List<String> stateKeys = STATES.get(stateIdentifier);
         if (stateKeys != null) {
             stateKeys.forEach(key -> {
-                if (trimmedIdentifier.contains("minecraft:shulker_box")) return;
+                //if (trimmedIdentifier.contains("minecraft:shulker_box")) return;
                 if (!statesObject.has(key)) {
                     statesObject.addProperty(key, "MANUALMAP");
                 }
@@ -1224,9 +1222,40 @@ public class MappingsGenerator {
             bedrockIdentifier = "bed";
         } else if (identifier.endsWith("_skull") || identifier.endsWith("_head")) {
             bedrockIdentifier = "skull";
-        } else if (identifier.endsWith("_shulker_box")) {
+        }
+
+
+        //TODO remove
+         else if (identifier.endsWith("_shulker_box")) {
             // Colored shulker boxes only
-            bedrockIdentifier = "shulker_box";
+            System.out.println("Shulker box " + identifier + " remapped");
+            bedrockIdentifier = identifier.replace("minecraft:", "");
+        }
+
+        // temp generation
+        if (identifier.contains("planks")) {
+            System.out.println("Planks!" + identifier);
+            bedrockIdentifier = identifier.replace("minecraft:", "");
+        }
+
+        if (identifier.contains("concrete")) {
+            System.out.println("Concrete!" + identifier);
+            bedrockIdentifier = identifier.replace("minecraft:", "");
+        }
+
+        if (identifier.contains("stained_glass")) {
+            System.out.println("stained glass" + identifier);
+            bedrockIdentifier = identifier.replace("minecraft:", "");
+        }
+
+        if (identifier.endsWith("_terracotta") && !identifier.contains("glazed")) {
+            System.out.println("Terracotta !" + identifier);
+            bedrockIdentifier = identifier.replace("minecraft:", "");
+        }
+
+        if (bedrockIdentifier.equals("stone")) {
+            System.out.println("Stone!" + bedrockIdentifier +  " " + identifier);
+            bedrockIdentifier = identifier.replace("minecraft:", "");
         }
 
         if (bedrockIdentifier.startsWith("stone_slab") || bedrockIdentifier.startsWith("double_stone_slab")) {
