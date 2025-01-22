@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.PushReaction;
 import org.geysermc.generator.EmptyLevelReader;
 import org.geysermc.generator.Util;
+import org.geysermc.generator.interactions.InteractionGenerator;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -26,14 +27,29 @@ public final class GenerateBlocksClass {
     public static void main(String[] args) {
         Util.initialize();
 
+        InteractionGenerator generator = new InteractionGenerator();
+        generator.generateInteractionData();
+
         Map<Block, String> classOverrides = new HashMap<>();
         classOverrides.put(Blocks.PISTON, "PistonBlock");
         classOverrides.put(Blocks.STICKY_PISTON, "PistonBlock");
         classOverrides.put(Blocks.WATER, "WaterBlock");
 
-        List<Class<? extends Block>> mirroredClasses = List.of(BedBlock.class, CauldronBlock.class, ChestBlock.class, DoorBlock.class,
-                FlowerPotBlock.class, FurnaceBlock.class, HoneyBlock.class, LecternBlock.class, MovingPistonBlock.class,
-                PistonHeadBlock.class, SpawnerBlock.class, TrapDoorBlock.class, WallSkullBlock.class);
+        List<Class<? extends Block>> mirroredClasses = List.of(BedBlock.class, ChestBlock.class, DoorBlock.class,
+                FlowerPotBlock.class, FurnaceBlock.class, HoneyBlock.class, MovingPistonBlock.class,
+                PistonHeadBlock.class, SpawnerBlock.class, TrapDoorBlock.class, WallSkullBlock.class,
+                CakeBlock.class, BeehiveBlock.class, RedStoneOreBlock.class, ButtonBlock.class);
+
+        Map<Class<? extends Block>, String> bonemealableOverrides = Map.of(
+                SaplingBlock.class, "AlwaysBonemealableBlock",
+                BonemealableFeaturePlacerBlock.class, "MossBlock",
+                MushroomBlock.class, "AlwaysBonemealableBlock",
+                SmallDripleafBlock.class, "AlwaysBonemealableBlock",
+                TallFlowerBlock.class, "AlwaysBonemealableBlock",
+                BambooStalkBlock.class, "BambooBlock",
+                CarrotBlock.class, "CropBlock",
+                PotatoBlock.class, "CropBlock"
+        );
 
         StringBuilder builder = new StringBuilder();
         var it = BuiltInRegistries.BLOCK.iterator();
@@ -46,8 +62,12 @@ public final class GenerateBlocksClass {
                 clazz = "BannerBlock";
             } else if (block instanceof AbstractSkullBlock) {
                 clazz = "SkullBlock";
-            } else if (block instanceof AbstractCauldronBlock) {
-                clazz = "CauldronBlock";
+            } else if (block instanceof BonemealableBlock) {
+                if (bonemealableOverrides.containsKey(block.getClass())) {
+                    clazz = bonemealableOverrides.get(block.getClass());
+                } else {
+                    clazz = block.getClass().getSimpleName();
+                }
             }
 
             boolean classMirrored = false;
@@ -60,6 +80,9 @@ public final class GenerateBlocksClass {
             }
 
             clazz = classOverrides.getOrDefault(block, clazz);
+
+            // Final override: interaction data classes
+            clazz = generator.getClassName(block, clazz);
 
             String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
             constructor.declareFieldName(path).declareClassName(clazz).addParameter(wrap(path));
@@ -107,6 +130,12 @@ public final class GenerateBlocksClass {
             if (pushReaction != PushReaction.NORMAL) {
                 constructor.addMethod("pushReaction", "PistonBehavior." + pushReaction);
             }
+
+            if (defaultState.canBeReplaced()) {
+                constructor.addMethod("replaceable");
+            }
+
+            generator.addInteractionData(constructor, block);
 
             // These are not unanimous, but we can figure that out pretty quick.
             if (!classMirrored) {

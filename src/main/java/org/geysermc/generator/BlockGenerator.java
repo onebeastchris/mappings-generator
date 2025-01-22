@@ -351,7 +351,7 @@ public final class BlockGenerator {
 
     private static final int OLD_VERSION = CompoundTagUpdaterContext.makeVersion(1, 21, 20);
 
-    static String blockStateToString(BlockState blockState) {
+    public static String blockStateToString(BlockState blockState) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(BuiltInRegistries.BLOCK.getKey(blockState.getBlock()));
         if (!blockState.getValues().isEmpty()) {
