@@ -15,14 +15,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.geysermc.mappings.definitions.biome.BedrockBiome;
 import org.geysermc.mappings.definitions.block.BlockEntry;
 import org.geysermc.mappings.definitions.block.BlockMappings;
-import org.geysermc.mappings.definitions.block.BlockPalette;
 import org.geysermc.mappings.definitions.shape.BlockShapeMappings;
 import org.geysermc.mappings.definitions.component.ItemDataComponents;
 import org.geysermc.mappings.definitions.component.TypedResolvableDataComponent;
 import org.geysermc.mappings.definitions.interactions.BlockInteractionData;
-import org.geysermc.mappings.definitions.item.ItemComponents;
 import org.geysermc.mappings.definitions.item.ItemEntry;
-import org.geysermc.mappings.definitions.item.RuntimeItemStates;
 import org.geysermc.mappings.definitions.mcpl.NetworkCodec;
 import org.geysermc.mappings.definitions.mcpl.NetworkTags;
 import org.geysermc.mappings.definitions.particle.ParticleMapping;
@@ -97,11 +94,6 @@ public record FileType<T>(String path, Codec<T> codec, Type type, boolean manage
     public static final FileType<List<List<TypedResolvableDataComponent>>> RESOLVABLE_ITEM_DATA_COMPONENTS = jsonMappings("resolvable_item_data_components", TypedResolvableDataComponent.CODEC.listOf().listOf().fieldOf("value").codec());
     public static final FileType<Map<SoundEvent, SoundMapping>> SOUND_MAPPINGS = jsonMappings("sounds", Codec.unboundedMap(MappingsCodecs.TRIMMED_SOUND_EVENT_CODEC, SoundMapping.CODEC));
     public static final FileType<UtilMappings> UTIL_MAPPINGS = jsonMappings("util", UtilMappings.CODEC);
-
-    // bedrock-data files
-    public static final FileType<BlockPalette> BLOCK_PALETTE = bedrockDataNbt("block_palette", BlockPalette.CODEC);
-    public static final FileType<Map<Identifier, CompoundTag>> ITEM_COMPONENTS_PALETTE = bedrockDataNbt("item_components", ItemComponents.COMPONENTS_CODEC);
-    public static final FileType<RuntimeItemStates> RUNTIME_ITEM_STATES = bedrockDataJson("runtime_item_states", RuntimeItemStates.CODEC);
 
     // bedrock-samples files
     public static final FileType<List<BedrockBiome>> BEDROCK_BIOMES = bedrockSamplesMetadata("mojang-biomes", BedrockBiome.CODEC.listOf().fieldOf("data_items").codec());
