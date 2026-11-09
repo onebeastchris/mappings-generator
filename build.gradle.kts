@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "org.geysermc.mappings-generator"
-version = "2.1.1"
+version = "3.0.0" // blocks.json added, item_components.nbt and additional_offhand_items.json dropped
 
 val targetJavaVersion = 25
 

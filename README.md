@@ -15,6 +15,20 @@ licensed under the MIT license [^1].
 - Ensure the `mappings/mappings` submodule is cloned: `git submodule update --init --recursive`.
     - If you don't do this, the generator will try to do it for you upon running, if you have `git` installed properly.
 
+## Bedrock data (Paletter)
+
+Mapped Bedrock block states and items are validated against the Bedrock data bundled with [Paletter](https://github.com/GeyserMC/Paletter), and
+`Items.java` refers to the constants of Paletter's `BedrockItems`. By default, a mapping must exist exactly as it is in the newest bundled Bedrock version.
+You can change what the generator validates against with Gradle properties, e.g. `./gradlew runDatagen -Pbedrock.version=26.50`:
+
+- `-Pbedrock.version=<version>`: validate against another bundled Bedrock version instead (also a bundled preview version).
+- `-Pbedrock.followRenames=true`: also accept what that version has under a new name (renamed blocks and items, changed block state keys).
+
+The lookup in use is logged when the generator starts. See `MappingsUtil#BEDROCK_LOOKUP`.
+
+**Draft:** Paletter is not published yet and is consumed through a composite build: check it out next to this repository as `../Paletter/Paletter-main`
+(see `settings.gradle.kts`).
+
 ## Running
 
 Run the `runDatagen` Gradle task. This will start the data generator, which will:
@@ -113,7 +127,7 @@ The generator generates the following data:
 - Various stub classes used in Geyser:
     - `Blocks.java`: listing all of Minecraft Java's blocks.
     - `GameRules.java`: listing all of Minecraft Java's game rules.
-    - `Items.java`: listing all of Minecraft Java's items.
+    - `Items.java`: listing all of Minecraft Java's items, with the Bedrock item each one is sent as (as constants of Paletter's `BedrockItems`, e.g. `builder().bedrock(BedrockItems.BANNER, 15)`).
     - `MapColor.java`: listing all of Minecraft Java's map colours.
     - `Properties.java`: listing all of Minecraft Java's block state properties.
     - `BlockTag.java`: listing all of Minecraft Java's vanilla block tags.
@@ -123,12 +137,11 @@ The generator generates the following data:
 - The mappings present in our [`mappings`](https://github.com/GeyserMC/mappings) repository:
     - `biomes.json`: a map from (vanilla) Minecraft Java biome to its respective Bedrock network ID.
     - `blocks.nbt` (and `blocks_debug.json`): a map from Minecraft Java block state to its respective Bedrock block state.
+    - `blocks.json`: the same mapping in a reduced form (format 3, see `BlockMappingsTable`): per Java block, how the Bedrock name and state values follow from the Java properties they depend on.
     - `block_shapes.nbt`: describing the shapes of all of Minecraft Java's block states.
     - `collisions.nbt`: describing the shapes of all of Minecraft Java's block state collision boxes.
     - `decorated_pot_patterns.json`: a map from (vanilla) Minecraft Java decorated pot pattern (asset ID) to its respective Bedrock item ID.
     - `interactions.json`: describing how interactions with a Minecraft Java block state may be processed.
-    - `item_components.nbt`: Minecraft Bedrock item components, patched by the generator to possibly allow extra items to be put in the off-hand.
-    - `additional_offhand_items.json`: an array of all Bedrock items that were patched by the generator to allow putting into the off-hand.
     - `item_data_components.json`: listing default data components for all of Minecraft Java's items, encoded to base 64 using Mojang's stream codecs.
     - `items.json`: a map from Minecraft Java item to its respective Bedrock item (with some additional data).
     - `particles.json`: a map from Minecraft Java particle to its respective Bedrock identifier or event type.
