@@ -83,6 +83,13 @@ loom {
         named("datagen") {
             jvmArguments.add("-Dline.separator=\u000a")
             jvmArguments.add("-javaagent:${mockitoAgent.asPath}")
+            // The Bedrock data that block states and items are validated against, see MappingsUtil#BEDROCK_LOOKUP
+            providers.gradleProperty("bedrock.version").orNull?.let {
+                jvmArguments.add("-Dbedrock.version=$it")
+                // Paletter only serves a bundled preview version on request
+                jvmArguments.add("-Dpaletter.previews=true")
+            }
+            providers.gradleProperty("bedrock.followRenames").orNull?.let { jvmArguments.add("-Dbedrock.followRenames=$it") }
         }
 
         register("MCPL") {

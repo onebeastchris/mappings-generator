@@ -1,5 +1,6 @@
 package org.geysermc.mappings.util;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JavaOps;
 import net.fabricmc.loader.api.FabricLoader;
@@ -13,7 +14,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.logging.log4j.core.pattern.AnsiEscape;
 import org.geysermc.mappings.MappingsGenerators;
+import org.geysermc.paletter.Lookup;
+import org.geysermc.paletter.Paletter;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -24,6 +28,9 @@ import java.util.stream.Stream;
 /// Holds utility methods used across the project
 public final class MappingsUtil {
     public static final CompoundTag EMPTY_TAG = new CompoundTag();
+    private static final Logger LOGGER = LogUtils.getLogger();
+    /// The Bedrock data that mapped block states and items are validated against, see {@link #readBedrockLookup()}
+    public static final Lookup BEDROCK_LOOKUP = readBedrockLookup();
 
     /// @return a stream of all {@link Field}s in the given {@link Class} with the `public static final` modifiers
     public static Stream<Field> listPublicConstants(Class<?> clazz) {
@@ -137,6 +144,25 @@ public final class MappingsUtil {
     /// Gets the `geyser:bedrock_data_sha` field from the FMJ
     public static String getBedrockDataSha() {
         return getModContainer().getMetadata().getCustomValue("geyser:bedrock_data_sha").getAsString();
+    }
+
+    /// Reads the Paletter {@link Lookup} from the `bedrock.version` and `bedrock.followRenames` system properties, which the
+    /// Gradle properties of the same name are passed on as. By default, mappings must exist exactly as they are in the newest
+    /// bundled Bedrock version ({@link Lookup#STRICT}).
+    private static Lookup readBedrockLookup() {
+        Lookup lookup = Lookup.STRICT;
+        String version = System.getProperty("bedrock.version");
+        if (version != null) {
+            lookup = Lookup.of(Paletter.bundled().versions().stream()
+                    .filter(bundled -> bundled.name().equals(version))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Bedrock version " + version + " is not bundled with Paletter: " + Paletter.bundled().versions())));
+        }
+        if (Boolean.getBoolean("bedrock.followRenames")) {
+            lookup = lookup.withRenames();
+        }
+        LOGGER.info("Validating Bedrock block states and items against {}", lookup);
+        return lookup;
     }
 
     // thank you rainbow

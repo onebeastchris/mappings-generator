@@ -92,7 +92,7 @@ public final class MappingsGenerators implements DataGeneratorEntrypoint {
 
         registerProviderGroup("mappings", builder -> builder
                 .withRegistryAndSamplesFactory(BiomeMappingsGenerator::new)
-                .withSamplesFactory(BlockMappingsGenerator::new)
+                .withFactory(BlockMappingsGenerator::new)
                 .withFactory(BlockShapeMappingsGenerator::new)
                 .withFactory(CollisionShapeMappingsGenerator::new)
                 .withRegistryFactory(PotPatternMappingsGenerator::new)
