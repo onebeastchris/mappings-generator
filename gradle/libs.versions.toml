@@ -18,6 +18,9 @@ fabric-api = "0.162.0+26.3"
 commons-text = "1.15.0"
 mockito = "5.23.0"
 cloudburst-protocol = "3.0.0.Beta13-SNAPSHOT"
+# DRAFT: consumed from ../Paletter/Paletter-main through a composite build (see settings.gradle.kts)
+paletter = "0.1.0-SNAPSHOT"
+junit = "5.13.4"
 
 [libraries]
 minecraft = {group = "com.mojang", name = "minecraft", version.ref = "minecraft-java" }
@@ -29,6 +32,12 @@ commons-text = {group = "org.apache.commons", name = "commons-text", version.ref
 mockito-core = {group = "org.mockito", name = "mockito-core", version.ref = "mockito"}
 bedrock-codec = {group = "org.cloudburstmc.protocol", name = "bedrock-codec", version.ref = "cloudburst-protocol"}
 bedrock-connection = {group = "org.cloudburstmc.protocol", name = "bedrock-connection", version.ref = "cloudburst-protocol"}
+
+paletter = {group = "org.geysermc.paletter", name = "paletter", version.ref = "paletter"}
+junit-bom = {group = "org.junit", name = "junit-bom", version.ref = "junit"}
+junit-jupiter = {group = "org.junit.jupiter", name = "junit-jupiter"}
+junit-platform-launcher = {group = "org.junit.platform", name = "junit-platform-launcher"}
+fabric-loader-junit = {group = "net.fabricmc", name = "fabric-loader-junit", version.ref = "fabric-loader"}
 
 [plugins]
 fabric-loom = {id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom"}

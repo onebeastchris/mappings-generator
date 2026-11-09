@@ -44,6 +44,15 @@ dependencies {
     implementation(libs.commons.text)
     implementation(libs.mockito.core)
     implementation(libs.bundles.cloudburst.protocol)
+    // Bedrock vanilla data (block states, items) and the BedrockItems constants of the newest Bedrock release
+    // DRAFT: resolved from ../Paletter/Paletter-main through the composite build in settings.gradle.kts
+    implementation(libs.paletter)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    // Boots Minecraft and Fabric in unit tests, so codegen can be tested against the real registries
+    testImplementation(libs.fabric.loader.junit)
 
     mockitoAgent(libs.mockito.core) {
         isTransitive = false
@@ -94,6 +103,14 @@ loom {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+        maxHeapSize = "2G"
+        // Minecraft's registries are global and freeze once: every test class gets a fresh game
+        forkEvery = 1
+        jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    }
+
     withType<JavaCompile> {
         options.release = targetJavaVersion
     }
