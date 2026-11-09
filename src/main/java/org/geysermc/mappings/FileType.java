@@ -86,6 +86,7 @@ public record FileType<T>(String path, Codec<T> codec, Type type, boolean manage
     public static final FileType<List<Identifier>> ADDITIONAL_OFFHAND_ITEMS = jsonMappings("additional_offhand_items", Identifier.CODEC.listOf());
     public static final FileType<Map<Holder<Biome>, Integer>> BIOME_MAPPINGS = jsonMappings("biomes", Codec.unboundedMap(Biome.CODEC, Codec.INT.fieldOf("bedrock_id").codec()));
     public static final FileType<Map<BlockState, BlockEntry>> BLOCK_MAPPINGS = nbtMappings("blocks", BlockMappings.CODEC);
+    public static final FileType<Map<BlockState, BlockEntry>> BLOCK_MAPPINGS_TABLE = text("mappings/blocks.json", BlockMappings.TABLE_CODEC, true);
     public static final FileType<BlockShapeMappings> BLOCK_SHAPE_MAPPINGS = nbtMappings("block_shapes", BlockShapeMappings.CODEC);
     public static final FileType<BlockShapeMappings> COLLISION_MAPPINGS = nbtMappings("collisions", BlockShapeMappings.CODEC);
     public static final FileType<Map<Identifier, Identifier>> DECORATED_POT_PATTERNS = jsonMappings("decorated_pot_patterns", Codec.unboundedMap(Identifier.CODEC, Identifier.CODEC));

@@ -26,6 +26,8 @@ public final class BlockMappings {
             .xmap(BlockMappings::listToMappings, BlockMappings::mappingsToList)
             .codec();
     public static final Codec<Map<BlockState, BlockEntry>> DEBUG_CODEC = Codec.unboundedMap(MappingsCodecs.BLOCK_STATE_STRING_CODEC, BlockEntry.CODEC);
+    /// The reduced form of the mappings, see {@link BlockMappingsTable}
+    public static final Codec<Map<BlockState, BlockEntry>> TABLE_CODEC = Codec.STRING.xmap(BlockMappingsTable::decode, BlockMappingsTable::encode);
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final Map<BlockState, BlockEntry> mappings = new Object2ObjectLinkedOpenHashMap<>();
