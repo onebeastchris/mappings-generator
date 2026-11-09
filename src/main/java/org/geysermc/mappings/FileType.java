@@ -83,7 +83,6 @@ public record FileType<T>(String path, Codec<T> codec, Type type, boolean manage
     public static final FileType<Map<BlockState, BlockEntry>> BLOCK_MAPPINGS_DEBUG = jsonData("blocks_debug", BlockMappings.DEBUG_CODEC);
 
     // Mappings
-    public static final FileType<List<Identifier>> ADDITIONAL_OFFHAND_ITEMS = jsonMappings("additional_offhand_items", Identifier.CODEC.listOf());
     public static final FileType<Map<Holder<Biome>, Integer>> BIOME_MAPPINGS = jsonMappings("biomes", Codec.unboundedMap(Biome.CODEC, Codec.INT.fieldOf("bedrock_id").codec()));
     public static final FileType<Map<BlockState, BlockEntry>> BLOCK_MAPPINGS = nbtMappings("blocks", BlockMappings.CODEC);
     public static final FileType<Map<BlockState, BlockEntry>> BLOCK_MAPPINGS_TABLE = text("mappings/blocks.json", BlockMappings.TABLE_CODEC, true);
@@ -91,7 +90,6 @@ public record FileType<T>(String path, Codec<T> codec, Type type, boolean manage
     public static final FileType<BlockShapeMappings> COLLISION_MAPPINGS = nbtMappings("collisions", BlockShapeMappings.CODEC);
     public static final FileType<Map<Identifier, Identifier>> DECORATED_POT_PATTERNS = jsonMappings("decorated_pot_patterns", Codec.unboundedMap(Identifier.CODEC, Identifier.CODEC));
     public static final FileType<BlockInteractionData> INTERACTION_MAPPINGS = jsonMappings("interactions", BlockInteractionData.CODEC);
-    public static final FileType<Map<Identifier, CompoundTag>> ITEM_COMPONENTS = nbtMappings("item_components", ItemComponents.COMPONENTS_CODEC);
     public static final FileType<List<ItemDataComponents>> ITEM_DATA_COMPONENTS = jsonMappings("item_data_components", ItemDataComponents.CODEC.listOf());
     public static final FileType<Map<Item, ItemEntry>> ITEM_MAPPINGS = jsonMappings("items", Codec.unboundedMap(BuiltInRegistries.ITEM.byNameCodec(), ItemEntry.CODEC));
     public static final FileType<Map<ParticleType<?>, ParticleMapping>> PARTICLE_MAPPINGS = jsonMappings("particles", Codec.unboundedMap(BuiltInRegistries.PARTICLE_TYPE.byNameCodec(), ParticleMapping.CODEC));
