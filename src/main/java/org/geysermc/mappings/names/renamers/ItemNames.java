@@ -5,7 +5,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.geysermc.mappings.names.InstanceRenamer;
 
+import java.util.Set;
+
 public final class ItemNames {
+    /// Java-only items: they do not exist on Bedrock (or only behind experiments), so Geyser sends them as the stand-in
+    /// that {@link #INSTANCE} renames them to. Items that require experimental features are Java-only as well, see
+    /// {@link org.geysermc.mappings.generator.javaclass.ItemsGenerator}.
+    public static final Set<Item> JAVA_ONLY = Set.of(
+            Items.TEST_BLOCK, Items.TEST_INSTANCE_BLOCK,
+            Items.KNOWLEDGE_BOOK, Items.SPECTRAL_ARROW, Items.TIPPED_ARROW, Items.DEBUG_STICK, Items.FURNACE_MINECART);
+
     public static final InstanceRenamer<Item, Identifier, Identifier> INSTANCE = InstanceRenamer.of(ItemNames::mapItemIdentifier, builder -> builder
             .mapResult(Identifier::withDefaultNamespace)
             // Conflicts
