@@ -40,18 +40,18 @@ public final class BlockMappings {
         mappings.put(state, entry);
     }
 
-    /// Maps every Java block state, which must be mapped to a block state that {@link MappingsUtil#BEDROCK_LOOKUP} accepts in the Bedrock data bundled with Paletter.
+    /// Maps every Java block state, which must be mapped to a block state that {@link MappingsUtil#bedrockLookup()} accepts in the Bedrock data bundled with Paletter.
     public void mapAllStates(Function<BlockState, BlockEntry> mapper) {
         boolean success = true;
         for (BlockState state : Block.BLOCK_STATE_REGISTRY) {
             BlockEntry mapped = mapper.apply(state);
             NbtMap bedrockState = bedrockState(mapped, state.getBlock());
-            if (Paletter.bundled().block(bedrockState, MappingsUtil.BEDROCK_LOOKUP) != null) {
+            if (Paletter.bundled().block(bedrockState, MappingsUtil.bedrockLookup()) != null) {
                 map(state, mapped);
             } else {
                 success = false;
                 LOGGER.error("Unknown bedrock block state: {} for Java state {}, not accepted by lookup \"{}\": {}", mapped.getName(state.getBlock()), MappingsUtil.blockStateToString(state),
-                        MappingsUtil.BEDROCK_LOOKUP, Paletter.bundled().explainUnknown(bedrockState));
+                        MappingsUtil.bedrockLookup(), Paletter.bundled().explainUnknown(bedrockState));
                 if (!mapped.state().isEmpty()) {
                     LOGGER.error("Bedrock block state NBT: {}", mapped.state());
                 }

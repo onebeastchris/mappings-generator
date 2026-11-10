@@ -24,6 +24,7 @@ import org.geysermc.mappings.names.renamers.ItemNames;
 import org.geysermc.mappings.util.FieldConstructor;
 import org.geysermc.mappings.util.MappingsUtil;
 import org.geysermc.paletter.Paletter;
+import org.geysermc.paletter.vanilla.BedrockItemType;
 
 import java.util.Comparator;
 import java.util.Locale;
@@ -64,7 +65,7 @@ public final class ItemsGenerator extends MappingsGenerator<String> {
                 constructor.finishParameters();
 
                 ItemEntry mapping = ItemEntry.of(item);
-                String bedrockItem = "BedrockItems." + Paletter.bundled().itemType(mapping.bedrockIdentifier().toString(), MappingsUtil.BEDROCK_LOOKUP).constantName();
+                String bedrockItem = "BedrockItems." + bedrockConstant(item, mapping);
                 constructor.addMethod("bedrock", mapping.bedrockData() == 0 ? bedrockItem : bedrockItem + ", " + mapping.bedrockData());
                 if (ItemNames.JAVA_ONLY.contains(item) || FeatureFlags.isExperimental(item.requiredFeatures())) {
                     constructor.addMethod("javaOnly");
@@ -97,6 +98,16 @@ public final class ItemsGenerator extends MappingsGenerator<String> {
 
             return saveFile(cache, clazz.toString());
         });
+    }
+
+    /// @return the name of the constant of `BedrockItems` that holds the Bedrock item an item is mapped to
+    private static String bedrockConstant(Item item, ItemEntry mapping) {
+        BedrockItemType type = Paletter.bundled().itemType(mapping.bedrockIdentifier().toString(), MappingsUtil.bedrockLookup());
+        String constant = type == null ? null : type.constantName();
+        if (constant == null) {
+            throw new IllegalStateException("Java item " + BuiltInRegistries.ITEM.getKey(item) + " is mapped to bedrock item " + mapping.bedrockIdentifier() + ", which has no constant in BedrockItems");
+        }
+        return constant;
     }
 
     @Override

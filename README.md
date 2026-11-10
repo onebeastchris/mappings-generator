@@ -24,7 +24,7 @@ You can change what the generator validates against with Gradle properties, e.g.
 - `-Pbedrock.version=<version>`: validate against another bundled Bedrock version instead (also a bundled preview version).
 - `-Pbedrock.followRenames=true`: also accept what that version has under a new name (renamed blocks and items, changed block state keys).
 
-The lookup in use is logged when the generator starts. See `MappingsUtil#BEDROCK_LOOKUP`.
+The lookup in use is logged when the generator starts. See `MappingsUtil#bedrockLookup()`.
 
 **Draft:** Paletter is not published yet and is consumed through a composite build: check it out next to this repository as `../Paletter/Paletter-main`
 (see `settings.gradle.kts`).

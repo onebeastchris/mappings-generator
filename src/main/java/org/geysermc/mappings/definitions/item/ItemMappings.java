@@ -24,17 +24,17 @@ public final class ItemMappings {
         mappings.put(item, entry);
     }
 
-    /// Maps every Java item, which must be mapped to an item variant that {@link MappingsUtil#BEDROCK_LOOKUP} accepts in the Bedrock data bundled with Paletter.
+    /// Maps every Java item, which must be mapped to an item variant that {@link MappingsUtil#bedrockLookup()} accepts in the Bedrock data bundled with Paletter.
     public void mapAllItems(BiFunction<Identifier, Item, ItemEntry> mapper) {
         boolean success = true;
         for (Item item : BuiltInRegistries.ITEM) {
             Identifier key = BuiltInRegistries.ITEM.getKey(item);
             ItemEntry entry = mapper.apply(key, item);
-            if (Paletter.bundled().item(entry.bedrockIdentifier().toString(), entry.bedrockData(), MappingsUtil.BEDROCK_LOOKUP) != null) {
+            if (Paletter.bundled().item(entry.bedrockIdentifier().toString(), entry.bedrockData(), MappingsUtil.bedrockLookup()) != null) {
                 map(item, entry);
             } else {
                 success = false;
-                LOGGER.error("Java item {} was mapped to bedrock item {} with data {}, which is not accepted by lookup \"{}\"!", key, entry.bedrockIdentifier(), entry.bedrockData(), MappingsUtil.BEDROCK_LOOKUP);
+                LOGGER.error("Java item {} was mapped to bedrock item {} with data {}, which is not accepted by lookup \"{}\"!", key, entry.bedrockIdentifier(), entry.bedrockData(), MappingsUtil.bedrockLookup());
             }
         }
         if (!success) {

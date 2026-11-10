@@ -29,8 +29,7 @@ import java.util.stream.Stream;
 public final class MappingsUtil {
     public static final CompoundTag EMPTY_TAG = new CompoundTag();
     private static final Logger LOGGER = LogUtils.getLogger();
-    /// The Bedrock data that mapped block states and items are validated against, see {@link #readBedrockLookup()}
-    public static final Lookup BEDROCK_LOOKUP = readBedrockLookup();
+    private static Lookup bedrockLookup;
 
     /// @return a stream of all {@link Field}s in the given {@link Class} with the `public static final` modifiers
     public static Stream<Field> listPublicConstants(Class<?> clazz) {
@@ -146,6 +145,14 @@ public final class MappingsUtil {
         return getModContainer().getMetadata().getCustomValue("geyser:bedrock_data_sha").getAsString();
     }
 
+    /// @return the Bedrock data that mapped block states and items are validated against, see {@link #readBedrockLookup()}
+    public static synchronized Lookup bedrockLookup() {
+        if (bedrockLookup == null) {
+            bedrockLookup = readBedrockLookup();
+        }
+        return bedrockLookup;
+    }
+
     /// Reads the Paletter {@link Lookup} from the `bedrock.version` and `bedrock.followRenames` system properties, which the
     /// Gradle properties of the same name are passed on as. By default, mappings must exist exactly as they are in the newest
     /// bundled Bedrock version ({@link Lookup#STRICT}).
@@ -156,7 +163,7 @@ public final class MappingsUtil {
             lookup = Lookup.of(Paletter.bundled().versions().stream()
                     .filter(bundled -> bundled.name().equals(version))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Bedrock version " + version + " is not bundled with Paletter: " + Paletter.bundled().versions())));
+                    .orElseThrow(() -> new IllegalArgumentException("The bedrock.version property " + version + " is not bundled with Paletter: " + Paletter.bundled().versions())));
         }
         if (Boolean.getBoolean("bedrock.followRenames")) {
             lookup = lookup.withRenames();
