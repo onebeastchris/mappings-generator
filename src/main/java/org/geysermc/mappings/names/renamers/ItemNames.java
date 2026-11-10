@@ -5,17 +5,24 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.geysermc.mappings.names.InstanceRenamer;
 
+import java.util.Map;
 import java.util.Set;
 
 public final class ItemNames {
-    /// Java-only items: they do not exist on Bedrock (or only behind experiments), so Geyser sends them as the stand-in
-    /// that {@link #INSTANCE} renames them to. Items that require experimental features are Java-only as well, see
+    /// Java-only items: they do not exist on Bedrock (or only behind experiments), so Geyser sends them as these stand-ins,
+    /// which {@link #INSTANCE} renames them to. Items that require experimental features are Java-only as well, see
     /// {@link org.geysermc.mappings.generator.javaclass.ItemsGenerator}.
-    public static final Set<Item> JAVA_ONLY = Set.of(
-            Items.TEST_BLOCK, Items.TEST_INSTANCE_BLOCK,
-            Items.KNOWLEDGE_BOOK, Items.SPECTRAL_ARROW, Items.TIPPED_ARROW, Items.DEBUG_STICK, Items.FURNACE_MINECART);
+    private static final Map<Item, String> STAND_INS = Map.of(
+            Items.TEST_BLOCK, "unknown", // Don't exist on bedrock edition (yet)
+            Items.TEST_INSTANCE_BLOCK, "unknown",
+            Items.KNOWLEDGE_BOOK, "book", // Replaced by us
+            Items.SPECTRAL_ARROW, "arrow",
+            Items.TIPPED_ARROW, "arrow",
+            Items.DEBUG_STICK, "stick",
+            Items.FURNACE_MINECART, "hopper_minecart");
+    public static final Set<Item> JAVA_ONLY = STAND_INS.keySet();
 
-    public static final InstanceRenamer<Item, Identifier, Identifier> INSTANCE = InstanceRenamer.of(ItemNames::mapItemIdentifier, builder -> builder
+    public static final InstanceRenamer<Item, Identifier, Identifier> INSTANCE = InstanceRenamer.of(ItemNames::mapItemIdentifier, builder -> renameStandIns(builder
             .mapResult(Identifier::withDefaultNamespace)
             // Conflicts
             .rename(Items.MAP, "empty_map") // Conflicts with filled map
@@ -79,18 +86,13 @@ public final class ItemNames {
             .rename(Items.BURIED_MINESHAFT_MAP, "filled_map")
             .rename(Items.DESERT_PYRAMID_MAP, "filled_map")
             .rename(Items.ABANDONED_CAMP_MAP, "filled_map")
-            .rename(Items.WARM_OCEAN_RUINS_MAP, "filled_map")
-            // Don't exist on bedrock edition (yet)
-            .rename(Items.TEST_BLOCK, "unknown")
-            .rename(Items.TEST_INSTANCE_BLOCK, "unknown")
-            // Replaced by us
-            .rename(Items.KNOWLEDGE_BOOK, "book")
-            .rename(Items.SPECTRAL_ARROW, "arrow")
-            .rename(Items.TIPPED_ARROW, "arrow")
-            .rename(Items.DEBUG_STICK, "stick")
-            .rename(Items.FURNACE_MINECART, "hopper_minecart"));
+            .rename(Items.WARM_OCEAN_RUINS_MAP, "filled_map")));
 
     private ItemNames() {}
+
+    private static void renameStandIns(InstanceRenamer.Aggregator<Item, Identifier, String, Item, Identifier, Identifier> names) {
+        STAND_INS.forEach(names::rename);
+    }
 
     private static Identifier mapItemIdentifier(Identifier baseBedrockIdentifier) {
         String bedrock = baseBedrockIdentifier.getPath();

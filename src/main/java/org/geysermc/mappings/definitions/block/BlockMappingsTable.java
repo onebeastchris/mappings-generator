@@ -17,6 +17,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.geysermc.mappings.util.MappingsUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -99,7 +100,13 @@ final class BlockMappingsTable {
         Set<String> keys = new LinkedHashSet<>();
         states.forEach(state -> keys.addAll(mappings.get(state).state().keySet()));
         JsonObject bedrockStates = new JsonObject();
-        keys.forEach(key -> bedrockStates.add(key, reduce(properties, states, state -> toJson(mappings.get(state).state().get(key)))));
+        keys.forEach(key -> bedrockStates.add(key, reduce(properties, states, state -> {
+            Tag value = mappings.get(state).state().get(key);
+            if (value == null) {
+                throw new IllegalStateException("The Bedrock block of " + javaName + " has no state " + key + " for " + MappingsUtil.blockStateToString(state));
+            }
+            return toJson(value);
+        })));
         if (!bedrockStates.isEmpty()) {
             json.add("states", bedrockStates);
         }
