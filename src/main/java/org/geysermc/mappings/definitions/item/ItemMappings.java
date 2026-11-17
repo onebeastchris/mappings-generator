@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.geysermc.mappings.names.renamers.ItemNames;
 import org.geysermc.mappings.util.MappingsUtil;
-import org.geysermc.paletter.Paletter;
+import org.geysermc.paletter.Lookup;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -25,17 +25,17 @@ public final class ItemMappings {
         mappings.put(item, entry);
     }
 
-    /// Maps every Java item, which must be mapped to an item variant that {@link MappingsUtil#bedrockLookup()} accepts in the Bedrock data bundled with Paletter.
+    /// Maps every Java item, which must be mapped to an item variant that {@link MappingsUtil#bedrockPalette()} accepts in the newest Bedrock data bundled with Paletter.
     public void mapAllItems(BiFunction<Identifier, Item, ItemEntry> mapper) {
         boolean success = true;
         for (Item item : BuiltInRegistries.ITEM) {
             Identifier key = BuiltInRegistries.ITEM.getKey(item);
             ItemEntry entry = mapper.apply(key, item);
-            if (Paletter.bundled().item(entry.bedrockIdentifier().toString(), entry.bedrockData(), MappingsUtil.bedrockLookup()) != null) {
+            if (MappingsUtil.bedrockPalette().itemVariant(entry.bedrockIdentifier().toString(), entry.bedrockData(), Lookup.EXACT) != null) {
                 map(item, entry);
             } else {
                 success = false;
-                LOGGER.error("Java item {} was mapped to an unknown bedrock item: {}", key, Paletter.bundled().explainUnknown(entry.bedrockIdentifier().toString(), entry.bedrockData(), MappingsUtil.bedrockLookup()));
+                LOGGER.error("Java item {} was mapped to an unknown bedrock item: {}", key, MappingsUtil.bedrockPalette().explainUnknown(entry.bedrockIdentifier().toString(), entry.bedrockData(), Lookup.EXACT));
             }
         }
         if (!success) {
@@ -44,11 +44,11 @@ public final class ItemMappings {
     }
 
     /// Warns about Java-only items ({@link ItemNames#JAVA_ONLY}) whose identifier is a Bedrock item by now, according to
-    /// {@link MappingsUtil#bedrockLookup()}: they probably do not need their stand-in anymore.
+    /// {@link MappingsUtil#bedrockPalette()}: they probably do not need their stand-in anymore.
     public void checkStandIns() {
         for (Item item : ItemNames.JAVA_ONLY) {
             Identifier key = BuiltInRegistries.ITEM.getKey(item);
-            if (Paletter.bundled().itemType(key.toString(), MappingsUtil.bedrockLookup()) != null) {
+            if (MappingsUtil.bedrockPalette().itemType(key.toString(), Lookup.EXACT) != null) {
                 LOGGER.warn("Java item {} is Java-only and sent as the stand-in {}, but Bedrock has an item {}: remove the stand-in from ItemNames if it is the same item", key, mappings.get(item).bedrockIdentifier(), key);
             }
         }

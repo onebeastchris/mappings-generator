@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.logging.log4j.core.pattern.AnsiEscape;
 import org.geysermc.mappings.MappingsGenerators;
 import org.geysermc.paletter.Lookup;
+import org.geysermc.paletter.Palette;
 import org.geysermc.paletter.Paletter;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ import java.util.stream.Stream;
 public final class MappingsUtil {
     public static final CompoundTag EMPTY_TAG = new CompoundTag();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static Lookup bedrockLookup;
+    private static Palette bedrockPalette;
 
     /// @return a stream of all {@link Field}s in the given {@link Class} with the `public static final` modifiers
     public static Stream<Field> listPublicConstants(Class<?> clazz) {
@@ -140,31 +141,15 @@ public final class MappingsUtil {
         return getModContainer().getMetadata().getCustomValue("geyser:human_bedrock_version").getAsString();
     }
 
-    /// @return the Bedrock data that mapped block states and items are validated against, see {@link #readBedrockLookup()}
-    public static synchronized Lookup bedrockLookup() {
-        if (bedrockLookup == null) {
-            bedrockLookup = readBedrockLookup();
+    /// @return the newest Bedrock data bundled with Paletter, with all experiments enabled, which mapped block states and items are
+    /// validated against, using {@link Lookup#EXACT}
+    public static synchronized Palette bedrockPalette() {
+        if (bedrockPalette == null) {
+            Paletter paletter = Paletter.builder().vanilla(content -> content.allExperiments()).build();
+            bedrockPalette = paletter.vanilla(paletter.latest());
+            LOGGER.info("Validating Bedrock block states and items against {}", bedrockPalette.version());
         }
-        return bedrockLookup;
-    }
-
-    /// Reads the Paletter {@link Lookup} from the `bedrock.version` and `bedrock.followRenames` system properties, which the
-    /// Gradle properties of the same name are passed on as. By default, mappings must exist exactly as they are in the newest
-    /// bundled Bedrock version ({@link Lookup#STRICT}).
-    private static Lookup readBedrockLookup() {
-        Lookup lookup = Lookup.STRICT;
-        String version = System.getProperty("bedrock.version");
-        if (version != null) {
-            lookup = Lookup.of(Paletter.bundled().versions().stream()
-                    .filter(bundled -> bundled.name().equals(version))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("The bedrock.version property " + version + " is not bundled with Paletter: " + Paletter.bundled().versions())));
-        }
-        if (Boolean.getBoolean("bedrock.followRenames")) {
-            lookup = lookup.withRenames();
-        }
-        LOGGER.info("Validating Bedrock block states and items against {}", lookup);
-        return lookup;
+        return bedrockPalette;
     }
 
     // thank you rainbow

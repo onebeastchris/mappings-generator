@@ -12,8 +12,7 @@ import org.cloudburstmc.nbt.NbtMap;
 import org.geysermc.mappings.util.MappingsCodecs;
 import org.geysermc.mappings.util.MappingsUtil;
 import org.geysermc.paletter.BlockExplanation;
-import org.geysermc.paletter.Paletter;
-import org.geysermc.paletter.data.DataVersion;
+import org.geysermc.paletter.Lookup;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -43,17 +42,17 @@ public final class BlockMappings {
         mappings.put(state, entry);
     }
 
-    /// Maps every Java block state, which must be mapped to a block state that {@link MappingsUtil#bedrockLookup()} accepts in the Bedrock data bundled with Paletter.
+    /// Maps every Java block state, which must be mapped to a block state that {@link MappingsUtil#bedrockPalette()} accepts in the newest Bedrock data bundled with Paletter.
     public void mapAllStates(Function<BlockState, BlockEntry> mapper) {
         boolean success = true;
         for (BlockState state : Block.BLOCK_STATE_REGISTRY) {
             BlockEntry mapped = mapper.apply(state);
             NbtMap bedrockState = bedrockState(mapped, state.getBlock());
-            if (Paletter.bundled().block(bedrockState, MappingsUtil.bedrockLookup()) != null) {
+            if (MappingsUtil.bedrockPalette().blockState(bedrockState, Lookup.EXACT) != null) {
                 map(state, mapped);
             } else {
                 success = false;
-                LOGGER.error("Unknown bedrock block state for Java state {}: {}", MappingsUtil.blockStateToString(state), Paletter.bundled().explainUnknown(bedrockState, MappingsUtil.bedrockLookup()));
+                LOGGER.error("Unknown bedrock block state for Java state {}: {}", MappingsUtil.blockStateToString(state), MappingsUtil.bedrockPalette().explainUnknown(bedrockState, Lookup.EXACT));
                 if (!mapped.state().isEmpty()) {
                     LOGGER.error("Bedrock block state NBT: {}", mapped.state());
                 }
@@ -71,11 +70,10 @@ public final class BlockMappings {
         }
     }
 
-    /// @return the state Paletter would send instead of a state of a known Bedrock block that the lookup does not accept, which shows the state keys
-    /// and values that are missing or wrong; null if the Bedrock version of the lookup has no such block
+    /// @return the state Paletter would send instead of a state of a known Bedrock block that the palette does not accept, which shows the state keys
+    /// and values that are missing or wrong; null if the palette has no such block
     private static @Nullable NbtMap closestBedrockState(NbtMap bedrockState) {
-        DataVersion version = MappingsUtil.bedrockLookup().version();
-        BlockExplanation explanation = Paletter.bundled().vanilla(version == null ? Paletter.bundled().latest() : version).explain(bedrockState);
+        BlockExplanation explanation = MappingsUtil.bedrockPalette().explain(bedrockState);
         return explanation.kind() == BlockExplanation.Kind.ADAPTED ? explanation.sent() : null;
     }
 

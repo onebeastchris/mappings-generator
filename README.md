@@ -18,16 +18,7 @@ licensed under the MIT license [^1].
 ## Bedrock data (Paletter)
 
 Mapped Bedrock block states and items are validated against the Bedrock data bundled with [Paletter](https://github.com/GeyserMC/Paletter), and
-`Items.java` refers to the constants of Paletter's `BedrockItems`. By default, a mapping must exist exactly as it is in the newest bundled Bedrock version.
-You can change what the generator validates against with Gradle properties, e.g. `./gradlew runDatagen -Pbedrock.version=26.50`:
-
-- `-Pbedrock.version=<version>`: validate against another bundled Bedrock version instead (also a bundled preview version).
-- `-Pbedrock.followRenames=true`: also accept what that version has under a new name (renamed blocks and items, changed block state keys).
-
-The lookup in use is logged when the generator starts. See `MappingsUtil#bedrockLookup()`.
-
-The unit tests take the same properties, so `./gradlew test -Pbedrock.version=<version>` checks the block and item mappings against another Bedrock version,
-such as a preview that Paletter bundles, without generating anything.
+`Items.java` refers to the constants of Paletter's `BedrockItems`. A mapping must exist exactly as it is in the newest bundled Bedrock version (with experiments enabled). See `MappingsUtil#bedrockPalette()`.
 
 **Draft:** Paletter is not published yet and is consumed through a composite build: check it out next to this repository as `../Paletter/Paletter-main`
 (see `settings.gradle.kts`).

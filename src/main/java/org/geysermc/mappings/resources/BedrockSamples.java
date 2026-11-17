@@ -29,7 +29,7 @@ import java.util.function.Function;
 /// It can be accessed through the {@link BedrockSamples#openSamples(FileSystemUser)} method. All files in here must be interacted through using {@link FileSystemAccess} and {@link org.geysermc.mappings.FileType}s.
 /// However, if the {@link FileSystemAccess} API does not provide your use case, you may also use {@link BedrockSamples#openSamplesRaw(RawFileSystemUser)} to interact with a {@link FileSystem} directly (not preferred).
 ///
-/// Bedrock block states and items do not come from here, but from Paletter: see {@link MappingsUtil#bedrockLookup()}.
+/// Bedrock block states and items do not come from here, but from Paletter: see {@link MappingsUtil#bedrockPalette()}.
 public final class BedrockSamples {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Path SAMPLES = Path.of("bedrock-samples.zip");

@@ -23,7 +23,7 @@ import org.geysermc.mappings.names.Renamers;
 import org.geysermc.mappings.names.renamers.ItemNames;
 import org.geysermc.mappings.util.FieldConstructor;
 import org.geysermc.mappings.util.MappingsUtil;
-import org.geysermc.paletter.Paletter;
+import org.geysermc.paletter.Lookup;
 import org.geysermc.paletter.vanilla.BedrockItemType;
 
 import java.util.Comparator;
@@ -102,7 +102,7 @@ public final class ItemsGenerator extends MappingsGenerator<String> {
 
     /// @return the name of the constant of `BedrockItems` that holds the Bedrock item an item is mapped to
     private static String bedrockConstant(Item item, ItemEntry mapping) {
-        BedrockItemType type = Paletter.bundled().itemType(mapping.bedrockIdentifier().toString(), MappingsUtil.bedrockLookup());
+        BedrockItemType type = MappingsUtil.bedrockPalette().itemType(mapping.bedrockIdentifier().toString(), Lookup.EXACT);
         String constant = type == null ? null : type.constantName();
         if (constant == null) {
             throw new IllegalStateException("Java item " + BuiltInRegistries.ITEM.getKey(item) + " is mapped to bedrock item " + mapping.bedrockIdentifier() + ", which has no constant in BedrockItems");
