@@ -237,7 +237,6 @@ mappings/.cache
 mappings/data
 mappings/javaclass
 mappings/mcpl
-mappings/bedrock-data.zip
 mappings/bedrock-samples.zip
 
 # Make sure to add the generated file hashes to VCS
