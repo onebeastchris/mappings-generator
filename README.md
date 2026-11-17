@@ -34,7 +34,7 @@ The lookup in use is logged when the generator starts. See `MappingsUtil#bedrock
 Run the `runDatagen` Gradle task. This will start the data generator, which will:
 
 - Try to clone the `mappings/mappings` submodule, if it was not cloned already.
-- Download [`bedrock-data.zip`](https://github.com/CloudburstMC/Data) and [`bedrock-samples.zip`](https://github.com/Mojang/bedrock-samples) locally, which contain data required to run some generators.
+- Download [`bedrock-samples.zip`](https://github.com/Mojang/bedrock-samples) locally, which contains data required to run some generators (biomes, sounds and particles).
 - Run all generators. At the end of the generation process, a list of added, changed, and deleted files will be presented to you.
 
 Alternatively, you can run one of the following Gradle tasks to only run a subset of the generators:
@@ -71,9 +71,10 @@ Then, attempt to run the generator. Resolve all compilation errors (if there are
 
 ### Updating the Minecraft Bedrock version
 
-Update the `minecraft-bedrock-tag` and `minecraft-bedrock-data` fields in the version catalogue. The former should be set to the appropriate tag at [Mojang/bedrock-samples](https://github.com/Mojang/bedrock-samples/releases),
-and the latter should be set to the respective commit hash for that version at [CloudburtsMC/Data](https://github.com/CloudburstMC/Data). Make sure that the `cloudburst-protocol` version is up-to-date as well, and supports
-the Bedrock version you're targeting.
+Bedrock block states and items come from Paletter: update Paletter to a version that bundles the Bedrock version you're targeting (see [Bedrock data (Paletter)](#bedrock-data-paletter)).
+
+Biomes, sounds and particles come from [Mojang/bedrock-samples](https://github.com/Mojang/bedrock-samples/releases): set the `minecraft-bedrock-tag` field in the version catalogue to the appropriate tag there.
+Make sure that the `cloudburst-protocol` version is up-to-date as well, and supports the Bedrock version you're targeting.
 
 Then, run the generator. If all goes well, the mappings should now reflect the Bedrock version you targeted.
 
@@ -90,11 +91,11 @@ and extract it in the `UtilMappings#create` method.
 If you do need to write a new generator, you need to take the following steps:
 
 1. Write one or multiple definitions for the kind of data you want to read- and write in the [`org.geysermc.mappings.definitions`](src/main/java/org/geysermc/mappings/definitions) package. Generally, these are `record`s with codecs.
-2. Create one or more [`FileType`](src/main/java/org/geysermc/mappings/FileType.java)s for the data you want to read- and write. You'll need to add at least one type for the new file you're generating. You also need to add new types for each file you want to read, if they don't exist already. This includes files in [CloudburstMC/data](https://github.com/CloudburstMC/Data) or [Mojang/bedrock-samples](https://github.com/Mojang/bedrock-samples).
+2. Create one or more [`FileType`](src/main/java/org/geysermc/mappings/FileType.java)s for the data you want to read- and write. You'll need to add at least one type for the new file you're generating. You also need to add new types for each file you want to read, if they don't exist already. This includes files in [Mojang/bedrock-samples](https://github.com/Mojang/bedrock-samples).
 3. Create a generator in the [`org.geysermc.mappings.generator`](src/main/java/org/geysermc/mappings/generator) package. The generator class must be `final` and must extend [`MappingsGenerator`](src/main/java/org/geysermc/mappings/generator/MappingsGenerator.java).
     - Consider sharing the generation code with the definitions you made earlier, so that the generator class doesn't grow too big.
     - If you need to write a map of renames, consider creating a "renamer" in the [`org.geysermc.mappings.names`](src/main/java/org/geysermc/mappings/names) package. See [`Renamers`](src/main/java/org/geysermc/mappings/names/Renamers.java).
-    - You may need a `RegistryAccess` instance, and you may need to read data from [CloudburstMC/data](https://github.com/CloudburstMC/Data) or [Mojang/bedrock-samples](https://github.com/Mojang/bedrock-samples). The Javadocs in [`MappingsGenerator`](src/main/java/org/geysermc/mappings/generator/MappingsGenerator.java) describe how to accomplish this.
+    - You may need a `RegistryAccess` instance, and you may need to read data from [Mojang/bedrock-samples](https://github.com/Mojang/bedrock-samples). The Javadocs in [`MappingsGenerator`](src/main/java/org/geysermc/mappings/generator/MappingsGenerator.java) describe how to accomplish this.
 4. Finally, add your generator to a generator subset in [`MappingsGenerators`](src/main/java/org/geysermc/mappings/MappingsGenerators.java), and run it!
 
 A few notes:

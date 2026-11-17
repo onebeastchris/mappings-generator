@@ -138,14 +138,6 @@ public record FileType<T>(String path, Codec<T> codec, Type type, boolean manage
         return nbt("mappings/" + name, codec, true);
     }
 
-    private static <T> FileType<T> bedrockDataJson(String name, Codec<T> codec) {
-        return json(name, codec, false);
-    }
-
-    private static <T> FileType<T> bedrockDataNbt(String name, Codec<T> codec) {
-        return nbt(name, codec, false);
-    }
-
     private static <T> FileType<T> bedrockSamplesMetadata(String name, Codec<T> codec) {
         return json("metadata/vanilladata_modules/" + name, codec, false);
     }

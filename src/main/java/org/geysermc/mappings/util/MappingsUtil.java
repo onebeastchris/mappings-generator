@@ -140,11 +140,6 @@ public final class MappingsUtil {
         return getModContainer().getMetadata().getCustomValue("geyser:human_bedrock_version").getAsString();
     }
 
-    /// Gets the `geyser:bedrock_data_sha` field from the FMJ
-    public static String getBedrockDataSha() {
-        return getModContainer().getMetadata().getCustomValue("geyser:bedrock_data_sha").getAsString();
-    }
-
     /// @return the Bedrock data that mapped block states and items are validated against, see {@link #readBedrockLookup()}
     public static synchronized Lookup bedrockLookup() {
         if (bedrockLookup == null) {
