@@ -132,7 +132,7 @@ The generator generates the following data:
 - The mappings present in our [`mappings`](https://github.com/GeyserMC/mappings) repository:
     - `biomes.json`: a map from (vanilla) Minecraft Java biome to its respective Bedrock network ID.
     - `blocks.nbt` (and `blocks_debug.json`): a map from Minecraft Java block state to its respective Bedrock block state.
-    - `blocks.json`: the same mapping in a reduced form (format 3, see `BlockMappingsTable`): per Java block, how the Bedrock name and state values follow from the Java properties they depend on.
+    - `blocks.json`: the same mapping in a reduced form (format 1, see `BlockMappingsTable`): per Java block, how the Bedrock name and state values follow from the Java properties they depend on.
     - `block_shapes.nbt`: describing the shapes of all of Minecraft Java's block states.
     - `collisions.nbt`: describing the shapes of all of Minecraft Java's block state collision boxes.
     - `decorated_pot_patterns.json`: a map from (vanilla) Minecraft Java decorated pot pattern (asset ID) to its respective Bedrock item ID.

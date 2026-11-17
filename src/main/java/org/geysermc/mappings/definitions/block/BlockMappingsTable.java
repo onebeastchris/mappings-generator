@@ -30,13 +30,13 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/// The reduced form of the block mappings, `blocks.json` (format 3, specified in the mappings repository's `FORMAT.md`): per Java block, how its
+/// The reduced form of the block mappings, `blocks.json` (format 1, specified in the mappings repository's `FORMAT.md`): per Java block, how its
 /// Bedrock name and each Bedrock state value follow from the Java properties they depend on, instead of one Bedrock state per Java state.
 ///
 /// A value is a constant, or a table `{"by": [properties], "values": {"java values joined by a comma": value}}` over the smallest set of
 /// properties it depends on. Tables and blocks that are used more than once are written once under `tables` and referred to as `$n`.
 final class BlockMappingsTable {
-    private static final int FORMAT = 3;
+    private static final int FORMAT = 1;
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     private BlockMappingsTable() {}
