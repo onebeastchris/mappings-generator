@@ -17,7 +17,7 @@ commons-text = "1.15.0"
 mockito = "5.23.0"
 cloudburst-protocol = "3.0.0.Beta13-SNAPSHOT"
 # DRAFT: consumed from ../Paletter/Paletter-main through a composite build (see settings.gradle.kts)
-paletter = "0.1.0-SNAPSHOT"
+paletter = "1.0.0-SNAPSHOT"
 junit = "5.13.4"
 
 [libraries]
