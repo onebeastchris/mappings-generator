@@ -20,6 +20,16 @@ val minecraftJavaVersion = libs.versions.minecraft.java
 val minecraftBedrockVersion = libs.versions.minecraft.bedrock.tag
 val minecraftBedrockHumanVersion = minecraftBedrockVersion.map { humanBedrockVersionRegex.find(it)?.value!! }
 
+// The Bedrock data that block states and items are validated against, in the generator and in the unit tests, see MappingsUtil#bedrockLookup()
+val bedrockLookupArguments = buildList {
+    providers.gradleProperty("bedrock.version").orNull?.let {
+        add("-Dbedrock.version=$it")
+        // Paletter only serves a bundled preview version on request
+        add("-Dpaletter.previews=true")
+    }
+    providers.gradleProperty("bedrock.followRenames").orNull?.let { add("-Dbedrock.followRenames=$it") }
+}
+
 // Have to do this to explicitly attach the Mockito Java agent: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
 val mockitoAgent = configurations.create("mockitoAgent")
 
@@ -83,13 +93,7 @@ loom {
         named("datagen") {
             jvmArguments.add("-Dline.separator=\u000a")
             jvmArguments.add("-javaagent:${mockitoAgent.asPath}")
-            // The Bedrock data that block states and items are validated against, see MappingsUtil#bedrockLookup()
-            providers.gradleProperty("bedrock.version").orNull?.let {
-                jvmArguments.add("-Dbedrock.version=$it")
-                // Paletter only serves a bundled preview version on request
-                jvmArguments.add("-Dpaletter.previews=true")
-            }
-            providers.gradleProperty("bedrock.followRenames").orNull?.let { jvmArguments.add("-Dbedrock.followRenames=$it") }
+            jvmArguments.addAll(bedrockLookupArguments)
         }
 
         register("MCPL") {
@@ -116,6 +120,7 @@ tasks {
         // Minecraft's registries are global and freeze once: every test class gets a fresh game
         forkEvery = 1
         jvmArgs("-javaagent:${mockitoAgent.asPath}")
+        jvmArgs(bedrockLookupArguments)
     }
 
     withType<JavaCompile> {

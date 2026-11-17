@@ -26,6 +26,9 @@ You can change what the generator validates against with Gradle properties, e.g.
 
 The lookup in use is logged when the generator starts. See `MappingsUtil#bedrockLookup()`.
 
+The unit tests take the same properties, so `./gradlew test -Pbedrock.version=<version>` checks the block and item mappings against another Bedrock version,
+such as a preview that Paletter bundles, without generating anything.
+
 **Draft:** Paletter is not published yet and is consumed through a composite build: check it out next to this repository as `../Paletter/Paletter-main`
 (see `settings.gradle.kts`).
 
