@@ -34,7 +34,7 @@ public final class ItemMappings {
                 map(item, entry);
             } else {
                 success = false;
-                LOGGER.error("Java item {} was mapped to bedrock item {} with data {}, which is not accepted by lookup \"{}\"!", key, entry.bedrockIdentifier(), entry.bedrockData(), MappingsUtil.bedrockLookup());
+                LOGGER.error("Java item {} was mapped to an unknown bedrock item: {}", key, Paletter.bundled().explainUnknown(entry.bedrockIdentifier().toString(), entry.bedrockData(), MappingsUtil.bedrockLookup()));
             }
         }
         if (!success) {
