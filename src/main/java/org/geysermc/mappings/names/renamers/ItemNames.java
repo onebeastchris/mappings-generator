@@ -34,7 +34,7 @@ public final class ItemNames {
             .rename(Items.STONE_STAIRS, "normal_stone_stairs") // Conflicts with cobblestone stairs
             .rename(Items.COBBLESTONE_STAIRS, "stone_stairs")
             .rename(Items.STONECUTTER, "stonecutter_block") // Conflicts with, surprisingly, the OLD MCPE stonecutter
-            .rename(Items.STONE_SLAB, "normal_stone_slab") // Not stone_block_slab (rule below)
+            .rename(Items.STONE_SLAB, "normal_stone_slab")
             // Changed names
             .rename(Items.FROGSPAWN, "frog_spawn")
             .rename(Items.GLOW_ITEM_FRAME, "glow_frame")
@@ -101,13 +101,6 @@ public final class ItemNames {
             bedrock = "banner";
         } else if (bedrock.endsWith("bed") && !bedrock.equals("straw_bed")) {
             bedrock = "bed";
-        }
-
-        if (bedrock.startsWith("stone_slab") || bedrock.startsWith("double_stone_slab")) {
-            bedrock = bedrock.replace("stone_slab", "stone_block_slab");
-        }
-        if (bedrock.startsWith("double_stone_block_slab")) {
-            bedrock = bedrock.replace("double_stone_block_slab", "stone_block_slab");
         }
 
         return Identifier.fromNamespaceAndPath(baseBedrockIdentifier.getNamespace(), bedrock);
