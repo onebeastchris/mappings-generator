@@ -20,6 +20,7 @@ public final class ItemMappingsGenerator extends MappingsGenerator<Map<Item, Ite
         ItemMappings mappings = new ItemMappings();
         mappings.mapAllItems((_, item) -> ItemEntry.of(item));
         mappings.checkForDuplicates();
+        mappings.checkStandIns();
         return saveFile(cache, mappings.mappings());
     }
 

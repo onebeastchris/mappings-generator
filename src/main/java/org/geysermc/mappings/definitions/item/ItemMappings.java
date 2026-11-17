@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import org.geysermc.mappings.names.renamers.ItemNames;
 import org.geysermc.mappings.util.MappingsUtil;
 import org.geysermc.paletter.Paletter;
 import org.slf4j.Logger;
@@ -39,6 +40,17 @@ public final class ItemMappings {
         }
         if (!success) {
             throw new IllegalStateException("Errors occurred whilst mapping items, item mappings are incomplete!");
+        }
+    }
+
+    /// Warns about Java-only items ({@link ItemNames#JAVA_ONLY}) whose identifier is a Bedrock item by now, according to
+    /// {@link MappingsUtil#bedrockLookup()}: they probably do not need their stand-in anymore.
+    public void checkStandIns() {
+        for (Item item : ItemNames.JAVA_ONLY) {
+            Identifier key = BuiltInRegistries.ITEM.getKey(item);
+            if (Paletter.bundled().itemType(key.toString(), MappingsUtil.bedrockLookup()) != null) {
+                LOGGER.warn("Java item {} is Java-only and sent as the stand-in {}, but Bedrock has an item {}: remove the stand-in from ItemNames if it is the same item", key, mappings.get(item).bedrockIdentifier(), key);
+            }
         }
     }
 
